@@ -1001,6 +1001,7 @@ See also `nov-bookmark-make-record'."
 
 ;;; Org interop
 
+;;;###autoload
 (defun nov-org-link-follow (path)
   "Follow nov: link designated by PATH."
   (if (string-match "^\\(.*\\)::\\([0-9]+\\):\\([0-9]+\\)$" path)
@@ -1010,6 +1011,7 @@ See also `nov-bookmark-make-record'."
         (nov--find-file file index point))
     (error "Invalid nov.el link")))
 
+;;;###autoload
 (defun nov-org-link-store ()
   "Store current EPUB location as nov: link."
   (when (and (eq major-mode 'nov-mode) nov-file-name)
@@ -1034,15 +1036,17 @@ See also `nov-bookmark-make-record'."
                :publisher (alist-get 'publisher nov-metadata)
                :description description))))
 
-(cond
- ((fboundp 'org-link-set-parameters)
-  (org-link-set-parameters
-   "nov"
-   :follow 'nov-org-link-follow
-   :store 'nov-org-link-store))
- ((fboundp 'org-add-link-type)
-  (org-add-link-type "nov" 'nov-org-link-follow)
-  (add-hook 'org-store-link-functions 'nov-org-link-store)))
+;;;###autoload
+(with-eval-after-load 'org
+  (cond
+   ((fboundp 'org-link-set-parameters)
+    (org-link-set-parameters
+     "nov"
+     :follow 'nov-org-link-follow
+     :store 'nov-org-link-store))
+   ((fboundp 'org-add-link-type)
+    (org-add-link-type "nov" 'nov-org-link-follow)
+    (add-hook 'org-store-link-functions 'nov-org-link-store))))
 
 
 ;;; Imenu interop
