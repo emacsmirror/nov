@@ -1023,10 +1023,15 @@ See also `nov-bookmark-make-record'."
                         nov-file-name
                         nov-documents-index
                         (point)))
-          (description (format "EPUB file at %s" nov-file-name)))
+          (description (or (alist-get 'title nov-metadata)
+                           (format "EPUB file at %s" nov-file-name))))
       (funcall org-store-props-function
                :type "nov"
                :link link
+               :author (alist-get 'creator nov-metadata)
+               :language (alist-get 'language nov-metadata)
+               :initial (alist-get 'description nov-metadata)
+               :publisher (alist-get 'publisher nov-metadata)
                :description description))))
 
 (cond
