@@ -793,15 +793,18 @@ Takes an optional COUNT, goes forward if COUNT is negative."
   (when target
     (let ((pos (point-min))
           done)
-      (while (and (not done)
-                  (setq pos (next-single-property-change pos 'shr-target-id)))
+      (while (and (not done) pos)
         (let ((property (get-text-property pos 'shr-target-id)))
-          (when (or (equal property target)
-                    ;; NOTE: as of Emacs 28.1 this may be a list of targets
-                    (and (consp property) (member target property)))
-            (goto-char pos)
-            (recenter (1- (max 1 scroll-margin)))
-            (setq done t))))
+          (if (or (equal property target)
+                  ;; NOTE: as of Emacs 28.1 this may be a list of targets
+                  (and (consp property) (member target property)))
+              (progn
+                (goto-char pos)
+                (recenter (1- (max 1 scroll-margin)))
+                (setq done t))
+            ;; NOTE: to catch the case of cursor starting out at the
+            ;; `shr-target-id' property, change pos *after* checking
+            (setq pos (next-single-property-change pos 'shr-target-id)))))
       (when (not done)
         (error "Couldn't locate target")))))
 
