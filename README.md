@@ -59,9 +59,15 @@ dislike globally customizing that face, add the following to your init
 file:
 
     (defun my-nov-font-setup ()
+      (face-remap-add-relative 'shr-text :family "Liberation Serif"
+                                         :height 1.0))
+    (add-hook 'nov-mode-hook 'my-nov-font-setup)
+
+In Emacs versions older than 29.1, use the following helper function:
+
+    (defun my-nov-font-setup ()
       (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
                                                :height 1.0))
-    (add-hook 'nov-mode-hook 'my-nov-font-setup)
 
 To completely disable the variable pitch font, customize
 `nov-variable-pitch` to `nil`.  Text will be displayed with the
