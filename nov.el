@@ -89,6 +89,18 @@ Otherwise the default face is used."
   :type 'boolean
   :group 'nov)
 
+(defcustom nov-image-animate t
+  "Non-nil if GIF images should be animated."
+  :type 'boolean
+  :group 'nov)
+
+(defcustom nov-image-animation-length 60
+  "Duration an animated GIF should be played."
+  :type '(choice (integer :tag "Number of seconds to play")
+                 (const :tag "Loop indefinitely" t)
+                 (const :tag "Play only once" nil))
+  :group 'nov)
+
 (defcustom nov-text-width nil
   "Width filled text shall occupy.
 An integer is interpreted as the number of columns.  If nil, use
@@ -540,7 +552,10 @@ This function honors `shr-max-image-proportion' if possible."
                                                         (- y2 y1)))))))
           (if image
               (insert-image image)
-            (insert alt)))))))
+            (insert alt))
+          (when (and shr-image-animate
+                     (cdr (image-multi-frame-p image)))
+            (image-animate image nil nov-image-animation-length)))))))
 
 (defvar nov-original-shr-tag-img-function
   (symbol-function 'shr-tag-img))
